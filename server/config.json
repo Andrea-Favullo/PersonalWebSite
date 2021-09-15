@@ -1,0 +1,9 @@
+{
+    
+    "redis":{
+        "password":"EjLaQaoAkRDGhrG1JjvJzSJMaDJlEOr7",
+        "port":"12570",
+        "host":"redis-12570.c135.eu-central-1-1.ec2.cloud.redislabs.com"
+    }
+    
+}
