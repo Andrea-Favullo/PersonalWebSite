@@ -4,11 +4,16 @@ const path = require('path');
 const http = require('http');
 const app = express();
 
+const config = require("./config.json")
+
 const redis = require('redis');
+rejson = require('redis-rejson');
+
+rejson(redis)
 const client = redis.createClient({
-   host: 'redis-12570.c135.eu-central-1-1.ec2.cloud.redislabs.com',
-   port: 12570,
-   password: 'EjLaQaoAkRDGhrG1JjvJzSJMaDJlEOr7'
+   host: config.redis.host,
+   port: config.redis.port,
+   password: config.redis.password
 });
 
 client.on('error', err => {
@@ -27,17 +32,21 @@ app.get('/api', (req, res) => {
    res.send('api works');
 });
 
-app.get("/get-text/:idtext", (req, res) => {
-   let t = req.params.idtext.toString();
-
-   console.log(t)
+app.get("/get-text/:idtext/:lang", (req, res) => {
    
-   client.get(t, function (err, reply) {
+   console.log("Parametri:")
+   console.log(req.params)
+   
+   let redis_key = req.params.idtext.toString();
+   let lang = req.params.lang.toString();
+
+   client.json_get(redis_key, lang, function (err, reply) {
+      console.log("Risposta:")
       console.log(reply)
+      console.log("Errore:")
       console.log(err)
       res.send(reply);
    });
-
 
 });
 
@@ -46,9 +55,6 @@ app.get('*', (req, res) => {
    res.send('app works!');
    //res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
-
-
-
 
 /**
  * Get port from environment and store in Express.
